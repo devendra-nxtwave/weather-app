@@ -31,17 +31,27 @@
 
     <!-- Main -->
     <main class="main">
-      <!-- Search (placeholder) -->
+      <!-- Search -->
       <section class="search-section">
-        <form class="search-form" onsubmit="return false;">
+        <form class="search-form" id="searchForm">
           <input
             type="text"
+            id="searchInput"
             class="search-input"
             placeholder="Search for a city or meteorological station..."
-            disabled
+            autocomplete="off"
           />
-          <button type="button" class="search-btn" disabled>SEARCH</button>
+          <button type="submit" id="searchBtn" class="search-btn">SEARCH</button>
         </form>
+
+        <!-- Error banner (hidden by default) -->
+        <div id="errorBanner" class="error-banner hidden" role="alert"></div>
+
+        <!-- Loading spinner (hidden by default) -->
+        <div id="loadingSpinner" class="loading-spinner hidden" aria-live="polite">
+          <div class="spinner"></div>
+          <span>Loading weather data...</span>
+        </div>
       </section>
 
       <!-- Current weather card (placeholder) -->

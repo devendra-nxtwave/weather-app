@@ -249,3 +249,55 @@ body {
 .footer__brand strong { display: block; color: var(--color-text-primary); margin-bottom: 0.25rem; }
 .footer__links { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
 .footer__links a { color: var(--color-text-secondary); text-decoration: none; }
+/* ── Utility ── */
+.hidden {
+  display: none !important;
+}
+
+/* ── Error banner ── */
+.error-banner {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+[data-theme="dark"] .error-banner {
+  background: #3b1c1c;
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+/* ── Loading spinner ── */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Disabled state during loading */
+.search-btn:disabled,
+.search-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
