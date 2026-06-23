@@ -1,4 +1,4 @@
-// ── Theme (keep your existing code) ──
+// ── Theme (Milestone 1) ──
 const THEME_KEY = 'weather-app-theme';
 const themeToggle = document.getElementById('themeToggle');
 
@@ -20,15 +20,13 @@ themeToggle.addEventListener('click', () => {
 
 initTheme();
 
-// ── Search & API (Milestone 2) ──
+// ── DOM references ──
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 const errorBanner = document.getElementById('errorBanner');
 const loadingSpinner = document.getElementById('loadingSpinner');
 
-const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
-const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const weatherCard = document.getElementById('weatherCard');
 const weatherCity = document.getElementById('weatherCity');
 const weatherDate = document.getElementById('weatherDate');
@@ -40,6 +38,16 @@ const weatherCondition = document.getElementById('weatherCondition');
 const weatherHumidity = document.getElementById('weatherHumidity');
 const weatherWind = document.getElementById('weatherWind');
 const weatherPressure = document.getElementById('weatherPressure');
+
+const forecastStrip = document.getElementById('forecastStrip');
+const insightsPanel = document.getElementById('insightsPanel');
+const insightsList = document.getElementById('insightsList');
+
+// ── API URLs (Milestone 2) ──
+const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
+
+// ── Helpers ──
 function getWeatherInfo(code) {
   if (code === 0) return { label: 'Clear', icon: '☀️' };
   if (code === 1) return { label: 'Mainly Clear', icon: '🌤️' };
@@ -54,11 +62,13 @@ function getWeatherInfo(code) {
   if (code >= 95 && code <= 99) return { label: 'Thunderstorm', icon: '⛈️' };
   return { label: 'Unknown', icon: '🌡️' };
 }
+
 function getTempAccentClass(temp) {
-  if (temp < 25) return 'weather-card__temp--cold';
-  if (temp <= 35) return 'weather-card__temp--mild';
+  if (temp < 10) return 'weather-card__temp--cold';
+  if (temp <= 25) return 'weather-card__temp--mild';
   return 'weather-card__temp--warm';
 }
+
 function formatCurrentDate(timezone) {
   return new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -67,19 +77,61 @@ function formatCurrentDate(timezone) {
     timeZone: timezone,
   });
 }
+
+function formatDayLabel(dateStr, index, timezone) {
+  if (index === 0) return 'TODAY';
+  const date = new Date(`${dateStr}T12:00:00`);
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    timeZone: timezone,
+  }).toUpperCase();
+}
+
+function formatHour(timeStr, timezone) {
+  return new Date(timeStr).toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: timezone,
+  });
+}
+
+function getTodayHourlyEntries(weather, count = 6) {
+  const today = weather.daily.time[0];
+  const { hourly } = weather;
+  const currentHour = parseInt(weather.current.time.split('T')[1].split(':')[0], 10);
+
+  const entries = [];
+
+  for (let i = 0; i < hourly.time.length; i++) {
+    const time = hourly.time[i];
+    if (!time.startsWith(today)) continue;
+
+    const hour = parseInt(time.split('T')[1].split(':')[0], 10);
+    if (hour < currentHour) continue;
+
+    entries.push({
+      time,
+      temp: hourly.temperature_2m[i],
+      code: hourly.weather_code[i],
+    });
+
+    if (entries.length === count) break;
+  }
+
+  return entries;
+}
+
+// ── Render functions ──
 function renderWeatherCard(location, weather) {
   const current = weather.current;
   const units = weather.current_units;
   const temp = Math.round(current.temperature_2m);
   const { label, icon } = getWeatherInfo(current.weather_code);
 
-  // City + country
   weatherCity.textContent = `${location.name}, ${location.country}`;
-
-  // Date below city name
   weatherDate.textContent = formatCurrentDate(weather.timezone);
 
-  // Temperature (number only in temp element; unit stays in span)
   weatherTemp.classList.remove(
     'weather-card__temp--cold',
     'weather-card__temp--mild',
@@ -87,24 +139,75 @@ function renderWeatherCard(location, weather) {
   );
   weatherTemp.classList.add(getTempAccentClass(temp));
 
-  // Update temp text — keep the unit span inside
   weatherTempValue.textContent = temp;
-
-  // Unit from API (usually °C)
   weatherUnit.textContent = units.temperature_2m;
 
-  // Condition + icon
   weatherIcon.textContent = icon;
   weatherCondition.textContent = label;
 
-  // Stats with units from API
   weatherHumidity.textContent = `${current.relative_humidity_2m}${units.relative_humidity_2m}`;
   weatherWind.textContent = `${current.wind_speed_10m} ${units.wind_speed_10m}`;
   weatherPressure.textContent = `${Math.round(current.surface_pressure)} ${units.surface_pressure}`;
 
-  // Show the card
   weatherCard.classList.remove('hidden');
 }
+
+function renderForecastStrip(weather) {
+  const { daily } = weather;
+  const timezone = weather.timezone;
+
+  forecastStrip.innerHTML = '';
+
+  for (let i = 0; i < 5; i++) {
+    const code = daily.weather_code[i];
+    const { icon } = getWeatherInfo(code);
+    const high = Math.round(daily.temperature_2m_max[i]);
+    const low = Math.round(daily.temperature_2m_min[i]);
+    const dayLabel = formatDayLabel(daily.time[i], i, timezone);
+
+    const card = document.createElement('div');
+    card.className = i === 0 ? 'forecast-card forecast-card--today' : 'forecast-card';
+
+    card.innerHTML = `
+      <span class="forecast-card__day">${dayLabel}</span>
+      <span class="forecast-card__icon">${icon}</span>
+      <span class="forecast-card__temps">
+        <span class="forecast-card__high">${high}°</span>
+        <span class="forecast-card__low"> / ${low}°</span>
+      </span>
+    `;
+
+    forecastStrip.appendChild(card);
+  }
+
+  forecastStrip.classList.remove('hidden');
+}
+
+function renderInsightsPanel(weather) {
+  const timezone = weather.timezone;
+  const unit = weather.hourly_units.temperature_2m;
+  const entries = getTodayHourlyEntries(weather, 6);
+
+  insightsList.innerHTML = '';
+
+  entries.forEach((entry) => {
+    const { label } = getWeatherInfo(entry.code);
+
+    const li = document.createElement('li');
+    li.className = 'insights-row';
+    li.innerHTML = `
+      <span class="insights-row__time">${formatHour(entry.time, timezone)}</span>
+      <span class="insights-row__condition">${label}</span>
+      <span class="insights-row__temp">${entry.temp.toFixed(1)}${unit}</span>
+    `;
+
+    insightsList.appendChild(li);
+  });
+
+  insightsPanel.classList.remove('hidden');
+}
+
+// ── Loading & error states (Milestone 2) ──
 function showLoading() {
   loadingSpinner.classList.remove('hidden');
   searchInput.disabled = true;
@@ -127,6 +230,7 @@ function hideError() {
   errorBanner.classList.add('hidden');
 }
 
+// ── API calls (Milestone 2) ──
 async function geocodeCity(cityName) {
   const url = `${GEOCODING_URL}?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
   const response = await fetch(url);
@@ -141,7 +245,7 @@ async function geocodeCity(cityName) {
     throw new Error(`City "${cityName}" not found. Please try another name.`);
   }
 
-  return data.results[0]; // { name, country, latitude, longitude, ... }
+  return data.results[0];
 }
 
 async function fetchWeather(latitude, longitude) {
@@ -179,11 +283,11 @@ async function handleSearch(cityName) {
     const weather = await fetchWeather(location.latitude, location.longitude);
 
     renderWeatherCard(location, weather);
+    renderForecastStrip(weather);
+    renderInsightsPanel(weather);
 
-    // Optional: keep logs while learning
     console.log('Location:', location);
     console.log('Weather:', weather);
-
   } catch (error) {
     showError(error.message);
   } finally {

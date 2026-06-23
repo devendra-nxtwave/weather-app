@@ -83,47 +83,14 @@
         </div>
       </section>
 
-      <!-- 5-day forecast strip (placeholder) -->
-      <section class="forecast-strip">
-        <div class="forecast-card forecast-card--today">
-          <span class="forecast-card__day">TODAY</span>
-          <span class="forecast-card__icon">⛅</span>
-          <span class="forecast-card__temps"><strong>12°</strong> / 8°</span>
-        </div>
-        <div class="forecast-card">
-          <span class="forecast-card__day">TUE</span>
-          <span class="forecast-card__icon">☀️</span>
-          <span class="forecast-card__temps"><strong>14°</strong> / 9°</span>
-        </div>
-        <div class="forecast-card">
-          <span class="forecast-card__day">WED</span>
-          <span class="forecast-card__icon">🌧️</span>
-          <span class="forecast-card__temps"><strong>11°</strong> / 7°</span>
-        </div>
-        <div class="forecast-card">
-          <span class="forecast-card__day">THU</span>
-          <span class="forecast-card__icon">⛅</span>
-          <span class="forecast-card__temps"><strong>13°</strong> / 8°</span>
-        </div>
-        <div class="forecast-card">
-          <span class="forecast-card__day">FRI</span>
-          <span class="forecast-card__icon">☀️</span>
-          <span class="forecast-card__temps"><strong>15°</strong> / 10°</span>
-        </div>
-      </section>
+    <!-- 5-day forecast strip -->
+    <section class="forecast-strip hidden" id="forecastStrip"></section>
 
-      <!-- Hourly insights (placeholder) -->
-      <section class="card insights-panel">
-        <h3 class="insights-panel__title">Hourly Micro-Data Insights</h3>
-        <ul class="insights-list">
-          <li class="insights-row"><span>14:00</span><span>High UV Index</span><span>12.4°C</span></li>
-          <li class="insights-row"><span>15:00</span><span>Developing Cumulus</span><span>12.1°C</span></li>
-          <li class="insights-row"><span>16:00</span><span>Gust Peak Recorded</span><span>11.8°C</span></li>
-          <li class="insights-row"><span>17:00</span><span>Partly Cloudy</span><span>11.2°C</span></li>
-          <li class="insights-row"><span>18:00</span><span>Light Breeze</span><span>10.5°C</span></li>
-          <li class="insights-row"><span>19:00</span><span>Clearing Skies</span><span>9.8°C</span></li>
-        </ul>
-      </section>
+    <!-- Hourly insights panel -->
+    <section class="card insights-panel hidden" id="insightsPanel">
+      <h3 class="insights-panel__title">Hourly Micro-Data Insights</h3>
+      <ul class="insights-list" id="insightsList"></ul>
+    </section>
     </main>
 
     <!-- Footer -->

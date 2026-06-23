@@ -239,6 +239,37 @@ body {
 
 .forecast-card__day { font-weight: 700; color: var(--color-text-secondary); }
 .forecast-card__icon { font-size: 1.25rem; }
+/* High temp emphasized, low temp muted (M4) */
+.forecast-card__high {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.forecast-card__low {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.forecast-card__temps {
+  text-align: center;
+}
+
+/* Insights row: time | condition | temp */
+.insights-row__time {
+  min-width: 3rem;
+  color: var(--color-text-secondary);
+}
+
+.insights-row__condition {
+  flex: 1;
+  text-align: center;
+}
+
+.insights-row__temp {
+  min-width: 4rem;
+  text-align: right;
+  font-weight: 600;
+}
 
 /* ── Insights panel ── */
 .insights-panel__title {
