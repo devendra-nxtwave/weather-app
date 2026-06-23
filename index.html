@@ -31,23 +31,31 @@
 
     <!-- Main -->
     <main class="main">
+      
       <!-- Search -->
       <section class="search-section">
-        <form class="search-form" id="searchForm">
-          <input
-            type="text"
-            id="searchInput"
-            class="search-input"
-            placeholder="Search for a city or meteorological station..."
-            autocomplete="off"
-          />
-          <button type="submit" id="searchBtn" class="search-btn">SEARCH</button>
-        </form>
+        <div class="search-wrapper">
+          <form class="search-form" id="searchForm">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search for a city or meteorological station..."
+              autocomplete="off"
+            />
+            <button type="submit" id="searchBtn" class="search-btn">SEARCH</button>
+          </form>
+          <button
+            type="button"
+            id="clearCityBtn"
+            class="clear-city-btn hidden"
+            aria-label="Clear saved city"
+            title="Clear city"
+          >✕</button>
+        </div>
 
-        <!-- Error banner (hidden by default) -->
         <div id="errorBanner" class="error-banner hidden" role="alert"></div>
 
-        <!-- Loading spinner (hidden by default) -->
         <div id="loadingSpinner" class="loading-spinner hidden" aria-live="polite">
           <div class="spinner"></div>
           <span>Loading weather data...</span>

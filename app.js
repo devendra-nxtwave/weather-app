@@ -1,5 +1,6 @@
 // ── Theme (Milestone 1) ──
 const THEME_KEY = 'weather-app-theme';
+const LAST_CITY_KEY = 'weather-app-last-city';
 const themeToggle = document.getElementById('themeToggle');
 
 function applyTheme(theme) {
@@ -24,6 +25,7 @@ initTheme();
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
+const clearCityBtn = document.getElementById('clearCityBtn');
 const errorBanner = document.getElementById('errorBanner');
 const loadingSpinner = document.getElementById('loadingSpinner');
 
@@ -43,11 +45,9 @@ const forecastStrip = document.getElementById('forecastStrip');
 const insightsPanel = document.getElementById('insightsPanel');
 const insightsList = document.getElementById('insightsList');
 
-// ── API URLs (Milestone 2) ──
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 
-// ── Helpers ──
 function getWeatherInfo(code) {
   if (code === 0) return { label: 'Clear', icon: '☀️' };
   if (code === 1) return { label: 'Mainly Clear', icon: '🌤️' };
@@ -100,7 +100,6 @@ function getTodayHourlyEntries(weather, count = 6) {
   const today = weather.daily.time[0];
   const { hourly } = weather;
   const currentHour = parseInt(weather.current.time.split('T')[1].split(':')[0], 10);
-
   const entries = [];
 
   for (let i = 0; i < hourly.time.length; i++) {
@@ -122,7 +121,6 @@ function getTodayHourlyEntries(weather, count = 6) {
   return entries;
 }
 
-// ── Render functions ──
 function renderWeatherCard(location, weather) {
   const current = weather.current;
   const units = weather.current_units;
@@ -141,7 +139,6 @@ function renderWeatherCard(location, weather) {
 
   weatherTempValue.textContent = temp;
   weatherUnit.textContent = units.temperature_2m;
-
   weatherIcon.textContent = icon;
   weatherCondition.textContent = label;
 
@@ -207,17 +204,52 @@ function renderInsightsPanel(weather) {
   insightsPanel.classList.remove('hidden');
 }
 
-// ── Loading & error states (Milestone 2) ──
+function saveLastCity(cityName) {
+  localStorage.setItem(LAST_CITY_KEY, cityName);
+}
+
+function getLastCity() {
+  return localStorage.getItem(LAST_CITY_KEY);
+}
+
+function clearLastCity() {
+  localStorage.removeItem(LAST_CITY_KEY);
+}
+
+function showClearButton() {
+  clearCityBtn.classList.remove('hidden');
+}
+
+function hideClearButton() {
+  clearCityBtn.classList.add('hidden');
+}
+
+function resetApp() {
+  clearLastCity();
+  hideError();
+  searchInput.value = '';
+  hideClearButton();
+
+  weatherCard.classList.add('hidden');
+  forecastStrip.classList.add('hidden');
+  insightsPanel.classList.add('hidden');
+
+  forecastStrip.innerHTML = '';
+  insightsList.innerHTML = '';
+}
+
 function showLoading() {
   loadingSpinner.classList.remove('hidden');
   searchInput.disabled = true;
   searchBtn.disabled = true;
+  clearCityBtn.disabled = true;
 }
 
 function hideLoading() {
   loadingSpinner.classList.add('hidden');
   searchInput.disabled = false;
   searchBtn.disabled = false;
+  clearCityBtn.disabled = false;
 }
 
 function showError(message) {
@@ -230,7 +262,6 @@ function hideError() {
   errorBanner.classList.add('hidden');
 }
 
-// ── API calls (Milestone 2) ──
 async function geocodeCity(cityName) {
   const url = `${GEOCODING_URL}?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
   const response = await fetch(url);
@@ -268,7 +299,7 @@ async function fetchWeather(latitude, longitude) {
   return response.json();
 }
 
-async function handleSearch(cityName) {
+async function loadWeather(cityName) {
   const trimmed = cityName.trim();
   if (!trimmed) {
     showError('Please enter a city name.');
@@ -286,8 +317,9 @@ async function handleSearch(cityName) {
     renderForecastStrip(weather);
     renderInsightsPanel(weather);
 
-    console.log('Location:', location);
-    console.log('Weather:', weather);
+    saveLastCity(trimmed);
+    searchInput.value = trimmed;
+    showClearButton();
   } catch (error) {
     showError(error.message);
   } finally {
@@ -295,7 +327,24 @@ async function handleSearch(cityName) {
   }
 }
 
+async function handleSearch(cityName) {
+  await loadWeather(cityName);
+}
+
 searchForm.addEventListener('submit', (event) => {
   event.preventDefault();
   handleSearch(searchInput.value);
 });
+
+clearCityBtn.addEventListener('click', () => {
+  resetApp();
+});
+
+function initApp() {
+  const lastCity = getLastCity();
+  if (lastCity) {
+    loadWeather(lastCity);
+  }
+}
+
+initApp();
