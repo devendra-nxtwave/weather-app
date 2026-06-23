@@ -29,7 +29,82 @@ const loadingSpinner = document.getElementById('loadingSpinner');
 
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
+const weatherCard = document.getElementById('weatherCard');
+const weatherCity = document.getElementById('weatherCity');
+const weatherDate = document.getElementById('weatherDate');
+const weatherTemp = document.getElementById('weatherTemp');
+const weatherTempValue = document.getElementById('weatherTempValue');
+const weatherUnit = document.getElementById('weatherUnit');
+const weatherIcon = document.getElementById('weatherIcon');
+const weatherCondition = document.getElementById('weatherCondition');
+const weatherHumidity = document.getElementById('weatherHumidity');
+const weatherWind = document.getElementById('weatherWind');
+const weatherPressure = document.getElementById('weatherPressure');
+function getWeatherInfo(code) {
+  if (code === 0) return { label: 'Clear', icon: '☀️' };
+  if (code === 1) return { label: 'Mainly Clear', icon: '🌤️' };
+  if (code === 2) return { label: 'Partly Cloudy', icon: '⛅' };
+  if (code === 3) return { label: 'Overcast', icon: '☁️' };
+  if (code >= 45 && code <= 48) return { label: 'Foggy', icon: '🌫️' };
+  if (code >= 51 && code <= 57) return { label: 'Drizzle', icon: '🌦️' };
+  if (code >= 61 && code <= 67) return { label: 'Rain', icon: '🌧️' };
+  if (code >= 71 && code <= 77) return { label: 'Snow', icon: '❄️' };
+  if (code >= 80 && code <= 82) return { label: 'Rain Showers', icon: '🌧️' };
+  if (code >= 85 && code <= 86) return { label: 'Snow Showers', icon: '🌨️' };
+  if (code >= 95 && code <= 99) return { label: 'Thunderstorm', icon: '⛈️' };
+  return { label: 'Unknown', icon: '🌡️' };
+}
+function getTempAccentClass(temp) {
+  if (temp < 25) return 'weather-card__temp--cold';
+  if (temp <= 35) return 'weather-card__temp--mild';
+  return 'weather-card__temp--warm';
+}
+function formatCurrentDate(timezone) {
+  return new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+    timeZone: timezone,
+  });
+}
+function renderWeatherCard(location, weather) {
+  const current = weather.current;
+  const units = weather.current_units;
+  const temp = Math.round(current.temperature_2m);
+  const { label, icon } = getWeatherInfo(current.weather_code);
 
+  // City + country
+  weatherCity.textContent = `${location.name}, ${location.country}`;
+
+  // Date below city name
+  weatherDate.textContent = formatCurrentDate(weather.timezone);
+
+  // Temperature (number only in temp element; unit stays in span)
+  weatherTemp.classList.remove(
+    'weather-card__temp--cold',
+    'weather-card__temp--mild',
+    'weather-card__temp--warm'
+  );
+  weatherTemp.classList.add(getTempAccentClass(temp));
+
+  // Update temp text — keep the unit span inside
+  weatherTempValue.textContent = temp;
+
+  // Unit from API (usually °C)
+  weatherUnit.textContent = units.temperature_2m;
+
+  // Condition + icon
+  weatherIcon.textContent = icon;
+  weatherCondition.textContent = label;
+
+  // Stats with units from API
+  weatherHumidity.textContent = `${current.relative_humidity_2m}${units.relative_humidity_2m}`;
+  weatherWind.textContent = `${current.wind_speed_10m} ${units.wind_speed_10m}`;
+  weatherPressure.textContent = `${Math.round(current.surface_pressure)} ${units.surface_pressure}`;
+
+  // Show the card
+  weatherCard.classList.remove('hidden');
+}
 function showLoading() {
   loadingSpinner.classList.remove('hidden');
   searchInput.disabled = true;
@@ -103,7 +178,9 @@ async function handleSearch(cityName) {
     const location = await geocodeCity(trimmed);
     const weather = await fetchWeather(location.latitude, location.longitude);
 
-    // M2 deliverable: log the data (UI update comes in M3/M4)
+    renderWeatherCard(location, weather);
+
+    // Optional: keep logs while learning
     console.log('Location:', location);
     console.log('Weather:', weather);
 

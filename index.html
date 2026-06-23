@@ -54,18 +54,32 @@
         </div>
       </section>
 
-      <!-- Current weather card (placeholder) -->
-      <section class="card weather-card">
+      <!-- Current weather card -->
+      <section class="card weather-card hidden" id="weatherCard">
         <div class="weather-card__main">
-          <h2 class="weather-card__city">Copenhagen, Denmark</h2>
-          <p class="weather-card__date">Monday, Oct 24</p>
-          <p class="weather-card__temp">12<span class="weather-card__unit">°C</span></p>
-          <p class="weather-card__condition">Partly Cloudy</p>
+          <h2 class="weather-card__city" id="weatherCity">—</h2>
+          <p class="weather-card__date" id="weatherDate">—</p>
+          <p class="weather-card__temp" id="weatherTemp">
+            <span id="weatherTempValue">—</span><span class="weather-card__unit" id="weatherUnit">°C</span>
+          </p>
+          <p class="weather-card__condition">
+            <span class="weather-card__icon" id="weatherIcon" aria-hidden="true"></span>
+            <span id="weatherCondition">—</span>
+          </p>
         </div>
         <div class="weather-card__stats">
-          <div class="stat"><span class="stat__label">Humidity</span><span class="stat__value">64%</span></div>
-          <div class="stat"><span class="stat__label">Wind Speed</span><span class="stat__value">18 km/h</span></div>
-          <div class="stat"><span class="stat__label">Pressure</span><span class="stat__value">1012 hPa</span></div>
+          <div class="stat">
+            <span class="stat__label">Humidity</span>
+            <span class="stat__value" id="weatherHumidity">—</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Wind Speed</span>
+            <span class="stat__value" id="weatherWind">—</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Pressure</span>
+            <span class="stat__value" id="weatherPressure">—</span>
+          </div>
         </div>
       </section>
 
