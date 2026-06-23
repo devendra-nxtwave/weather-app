@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header__brand">Weather App</div>
+      <nav class="header__nav" aria-label="Main navigation">
+        <a href="#" class="nav-link nav-link--active">Dashboard</a>
+        <a href="#" class="nav-link">Map</a>
+        <a href="#" class="nav-link">Education</a>
+        <a href="#" class="nav-link">Historical</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <!-- Sun icon (light mode) — swap via JS or CSS -->
+        <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Search (placeholder) -->
+      <section class="search-section">
+        <form class="search-form" onsubmit="return false;">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search for a city or meteorological station..."
+            disabled
+          />
+          <button type="button" class="search-btn" disabled>SEARCH</button>
+        </form>
+      </section>
+
+      <!-- Current weather card (placeholder) -->
+      <section class="card weather-card">
+        <div class="weather-card__main">
+          <h2 class="weather-card__city">Copenhagen, Denmark</h2>
+          <p class="weather-card__date">Monday, Oct 24</p>
+          <p class="weather-card__temp">12<span class="weather-card__unit">°C</span></p>
+          <p class="weather-card__condition">Partly Cloudy</p>
+        </div>
+        <div class="weather-card__stats">
+          <div class="stat"><span class="stat__label">Humidity</span><span class="stat__value">64%</span></div>
+          <div class="stat"><span class="stat__label">Wind Speed</span><span class="stat__value">18 km/h</span></div>
+          <div class="stat"><span class="stat__label">Pressure</span><span class="stat__value">1012 hPa</span></div>
+        </div>
+      </section>
+
+      <!-- 5-day forecast strip (placeholder) -->
+      <section class="forecast-strip">
+        <div class="forecast-card forecast-card--today">
+          <span class="forecast-card__day">TODAY</span>
+          <span class="forecast-card__icon">⛅</span>
+          <span class="forecast-card__temps"><strong>12°</strong> / 8°</span>
+        </div>
+        <div class="forecast-card">
+          <span class="forecast-card__day">TUE</span>
+          <span class="forecast-card__icon">☀️</span>
+          <span class="forecast-card__temps"><strong>14°</strong> / 9°</span>
+        </div>
+        <div class="forecast-card">
+          <span class="forecast-card__day">WED</span>
+          <span class="forecast-card__icon">🌧️</span>
+          <span class="forecast-card__temps"><strong>11°</strong> / 7°</span>
+        </div>
+        <div class="forecast-card">
+          <span class="forecast-card__day">THU</span>
+          <span class="forecast-card__icon">⛅</span>
+          <span class="forecast-card__temps"><strong>13°</strong> / 8°</span>
+        </div>
+        <div class="forecast-card">
+          <span class="forecast-card__day">FRI</span>
+          <span class="forecast-card__icon">☀️</span>
+          <span class="forecast-card__temps"><strong>15°</strong> / 10°</span>
+        </div>
+      </section>
+
+      <!-- Hourly insights (placeholder) -->
+      <section class="card insights-panel">
+        <h3 class="insights-panel__title">Hourly Micro-Data Insights</h3>
+        <ul class="insights-list">
+          <li class="insights-row"><span>14:00</span><span>High UV Index</span><span>12.4°C</span></li>
+          <li class="insights-row"><span>15:00</span><span>Developing Cumulus</span><span>12.1°C</span></li>
+          <li class="insights-row"><span>16:00</span><span>Gust Peak Recorded</span><span>11.8°C</span></li>
+          <li class="insights-row"><span>17:00</span><span>Partly Cloudy</span><span>11.2°C</span></li>
+          <li class="insights-row"><span>18:00</span><span>Light Breeze</span><span>10.5°C</span></li>
+          <li class="insights-row"><span>19:00</span><span>Clearing Skies</span><span>9.8°C</span></li>
+        </ul>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer__brand">
+        <strong>Weather App</strong>
+        <p>© 2024 Weather App. Precision Weather Education.</p>
+      </div>
+      <div class="footer__links">
+        <a href="#">Privacy Policy</a>
+        <span>·</span>
+        <a href="#">Terms of Service</a>
+        <span>·</span>
+        <a href="#">Scientific Data Sources</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
